@@ -28,3 +28,14 @@ https://proyecto-rx73.onrender.com
 | **Base de Datos** | SQLModel (ORM) + SQLite |
 | **Servidor Web** | Uvicorn |
 | **Frontend** | HTML5, CSS3, Jinja2 Templates, JavaScript |
+
+
+Ruta (Path),Método HTTP,Router,Propósito,Tipo de Respuesta
+/,GET,pc_router,Muestra la página de inicio interactiva (pc_view.html) y consulta los componentes principales.,HTML
+---,---,---,---,---
+/{component_id}/json,GET,components_router,"Explorador Interactivo: Obtiene los detalles de un componente específico (por ID) en formato JSON, con lógica para sobrescribir algunas URLs de imagen.",JSON (Detalles del Componente)
+/{component_id}/delete,POST,components_router,CRUD: Elimina un componente de la base de datos (se usa POST y RedirectResponse para formularios HTML tradicionales).,Redirección a /components
+---,---,---,---,---
+/submit-contact,POST,pc_router,"Buzón de Sugerencias: Procesa el envío del formulario de contacto/sugerencias, guarda el texto y opcionalmente sube y guarda la imagen en el servidor.",Redirección a /
+/suggestions/json,GET,pc_router,Obtiene todas las sugerencias de la base de datos en formato JSON (utilizado por el frontend para mostrar las sugerencias en un modal).,JSON (Lista de Sugerencias)
+/suggestions/{suggestion_id},DELETE,pc_router,Gestión de Sugerencias: Elimina una sugerencia por ID de la base de datos. Está diseñado para ser llamado vía JavaScript desde el frontend.,HTTP 204 No Content
