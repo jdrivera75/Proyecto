@@ -16,6 +16,10 @@ Este proyecto sigue una arquitectura MVC ligera, utilizando SQLModel para la ges
 * **Arquitectura:** Organización del código modular en routers (`pc_router.py`, `components_router.py`) para mantener la aplicación escalable y limpia.
 * **Despliegue:** Preparado para desplegar en servicios de cloud como Render.
 
+este es el link para abrir el render:
+https://proyecto-rx73.onrender.com
+
+
 ##  Tecnologías
 
 | Tecnología | Descripción |
