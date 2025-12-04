@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PC Builder{% endblock %}</title>
-    <!-- CSS global: Estilo Gamer/RGB -->
+  
     <link rel="stylesheet" href="/static/css/pc.css">
     
     <style>
-        /* Estilos Gamer/RGB integrados de base */
+
         :root {
             --bg-dark: #121212;
             --text-light: #fefefe;
@@ -31,7 +31,7 @@
             flex-direction: column;
         }
 
-        /* Estilo para el mensaje de éxito del formulario */
+    
         .success-message {
             position: fixed;
             top: 20px;
@@ -54,14 +54,12 @@
 </head>
 <body>
 
-    <!-- Mensaje de éxito del formulario -->
     {% if success_message %}
         <div class="success-message" onclick="this.remove()">
             {{ success_message }}
         </div>
     {% endif %}
 
-    <!-- Contenido principal (pc_view.html) -->
     <main>
         {% block content %}{% endblock %}
     </main>
