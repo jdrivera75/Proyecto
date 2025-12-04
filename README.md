@@ -20,7 +20,7 @@ este es el link para abrir el render:
 https://proyecto-rx73.onrender.com
 
 
-##  Tecnologías
+
 
 | Tecnología | Descripción |
 | :--- | :--- |
