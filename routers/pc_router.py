@@ -8,16 +8,15 @@ from typing import Optional
 
 import shutil
 import os
-import uuid # Para generar nombres de archivo únicos
+import uuid 
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 # Directorio donde se guardarán las imágenes de las sugerencias
-# ¡Asegúrate de que esta carpeta exista!
 STATIC_DIR = "static/img/suggested_components" 
 
-@router.get("/", response_class=HTMLResponse)
+@router.get("/", response_class=HTMLResponse, name="pc_interactive_view")
 def pc_interactive_view(request: Request, session: Session = Depends(get_session)):
     components = session.exec(select(Component).limit(5)).all()
     build = {"name": "PC Gamer Elite", "description": "Explorador Interactivo de Componentes."}
@@ -50,21 +49,20 @@ def submit_contact(
             os.makedirs(STATIC_DIR, exist_ok=True) 
             # 2. Guardar el archivo en el sistema de archivos
             with open(file_path, "wb") as buffer:
-                # component_image.file es un SpooledTemporaryFile; shutil.copyfileobj lo maneja bien
                 shutil.copyfileobj(component_image.file, buffer)
             # 3. Guardar la URL pública en la base de datos
             image_url_db = f"/static/img/suggested_components/{unique_filename}"
         except Exception as e:
             print(f"Error al guardar la imagen de sugerencia: {e}")
-            # Considerar qué hacer si falla el guardado, pero la sugerencia es válida.
         finally:
+            # Es importante cerrar el archivo subido
             component_image.file.close()
 
 
     new_suggestion = Suggestion(
         sender_name=sender_name,
         message=suggestion_message,
-        image_url=image_url_db # Puede ser la URL o None
+        image_url=image_url_db 
     )
     session.add(new_suggestion)
     session.commit()
@@ -91,7 +89,7 @@ def get_suggestions_json(session: Session = Depends(get_session)):
             "id": s.id, 
             "sender_name": s.sender_name, 
             "message": s.message, 
-            "image_url": s.image_url # Este campo es clave
+            "image_url": s.image_url # Clave para el frontend
         } 
         for s in suggestions
     ]
@@ -99,6 +97,7 @@ def get_suggestions_json(session: Session = Depends(get_session)):
 
 @router.delete("/suggestions/{suggestion_id}")
 def delete_suggestion(suggestion_id: int, session: Session = Depends(get_session)):
+    """Elimina una sugerencia por ID."""
     suggestion = session.get(Suggestion, suggestion_id)
     if suggestion:
         session.delete(suggestion)
