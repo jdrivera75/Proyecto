@@ -11,8 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const suggestionsModal = document.getElementById("suggestions-modal");
     const closeSuggestionsModalBtn = document.querySelector(".close-suggestions-modal");
 
-    // --- Funciones de Fallback y Componentes (Se mantienen) ---
-
+    // --- Funciones de Fallback y Componentes ---
     function getFallbackImageUrl(componentId) {
         switch (componentId.toString()) { 
             case '2': return '/static/img/grafica.webp';
@@ -90,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
     
-    // --- EVENT LISTENERS (Se mantienen) ---
+    // --- EVENT LISTENERS ---
     document.querySelectorAll('.component-button[data-id]').forEach(button => {
         button.addEventListener('click', async (e) => {
             e.preventDefault();
@@ -136,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
     
-    // 🌟 FUNCIÓN: Cargar las sugerencias (AHORA CON IMAGEN) 🌟
+    // 🌟 FUNCIÓN: Cargar las sugerencias (AHORA CON LÓGICA DE IMAGEN) 🌟
     async function loadSuggestions() {
         const listDiv = document.getElementById("suggestions-list");
         listDiv.innerHTML = '<p>Cargando sugerencias...</p>'; 
@@ -161,23 +160,27 @@ document.addEventListener("DOMContentLoaded", function () {
                     imageHtml = `
                         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #333;">
                             <img src="${s.image_url}" 
-                                 alt="Foto adjunta por ${s.sender_name}" 
-                                 style="max-width: 150px; height: auto; border-radius: 5px; border: 2px solid #00bfff;">
+                                 alt="Foto de perfil de ${s.sender_name}" 
+                                 style="max-width: 150px; height: auto; border-radius: 50%; width: 100px; height: 100px; object-fit: cover; border: 2px solid #00bfff;">
+                                 <p style="font-size: 0.8em; opacity: 0.8; margin-top: 5px;">Foto de Perfil Adjunta</p>
                         </div>
                     `;
                 } else {
-                    imageHtml = `<p style="opacity: 0.7; font-style: italic; margin-top: 5px;">No se adjuntó foto.</p>`;
+                    imageHtml = `<p style="opacity: 0.7; font-style: italic; margin-top: 5px;">No se adjuntó foto de perfil.</p>`;
                 }
                 // ---------------------------------------------
                 
                 return `
-                    <div class="suggestion-item" style="border-bottom: 1px dashed #444; padding: 10px 0; position: relative; margin-bottom: 10px;">
-                        <p style="margin: 0; color: #fff;">
-                            💬 <strong>${s.sender_name || 'Usuario Desconocido'} dice:</strong> 
-                            ${s.message}
-                        </p>
+                    <div class="suggestion-item" style="border-bottom: 1px dashed #444; padding: 10px 0; position: relative; margin-bottom: 10px; display: flex; align-items: center; gap: 20px;">
                         
                         ${imageHtml}
+                        
+                        <div style="flex-grow: 1;">
+                            <p style="margin: 0; color: #fff;">
+                                💬 <strong>${s.sender_name || 'Usuario Desconocido'} dice:</strong> 
+                                ${s.message}
+                            </p>
+                        </div>
                         
                         <button class="delete-suggestion-btn" data-id="${s.id}" 
                                 style="position: absolute; top: 5px; right: 5px; background: none; border: 1px solid red; color: red; cursor: pointer; padding: 3px 6px; border-radius: 5px; font-size: 10px;">

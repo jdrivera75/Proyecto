@@ -55,27 +55,27 @@
 
 </div>
 <div id="contact-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2>Formulario de Sugerencias (Con Nombre)</h2>
-        
-                <form method="POST" action="/submit-contact" class="contact-form" enctype="multipart/form-data">
-            
-            <label for="name">Nombre:</label>
-            <input type="text" id="name" name="name" required>
-            
-            <label for="email">Correo Electrónico:</label>
-            <input type="email" id="email" name="email" required>
-            
-            <label for="suggestion_box">Buzón de Sugerencias:</label>
-            <textarea id="suggestion_box" name="suggestion_box" rows="5" required></textarea>
-            
-                        <label for="component_image">Foto de Perfil (Opcional):</label>
-            <input type="file" id="component_image" name="component_image" accept="image/*">
-            
-            <button type="submit" class="btn-primary" style="margin-top: 15px;">Enviar Sugerencia</button>
-        </form>
-    </div>
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Formulario de Sugerencias (Con Nombre)</h2>
+        
+        <form method="POST" action="/submit-contact" class="contact-form" enctype="multipart/form-data">
+            
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" name="name" required>
+              
+            <label for="email">Correo Electrónico:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="suggestion_box">Buzón de Sugerencias:</label>
+            <textarea id="suggestion_box" name="suggestion_box" rows="5" required></textarea>
+            
+            <label for="component_image">Foto de Perfil (Opcional):</label>
+            <input type="file" id="component_image" name="component_image" accept="image/*">
+            
+            <button type="submit" class="btn-primary" style="margin-top: 15px;">Enviar Sugerencia</button>
+        </form>
+    </div>
 </div>
 
 <div id="suggestions-modal" class="modal">
