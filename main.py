@@ -1,15 +1,13 @@
-# main.py
+
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-# 1. Importar los módulos necesarios
+
 from database import create_db_and_tables 
 from routers import pc_router, components_router 
 
-# ===========================================
-# 2. INICIALIZACIÓN DE FASTAPI
-# ===========================================
+
 app = FastAPI(
     title="PC Builder Interactivo",
     description="Aplicación web para visualizar y gestionar componentes de PC y un Buzón de Sugerencias con nombre.",
