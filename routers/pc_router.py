@@ -1,25 +1,25 @@
-# routers/pc_router.py
-from fastapi import APIRouter, Request, Depends, Form, status, UploadFile, File, HTTPException, Response # 👈 Importar Response
+from fastapi import APIRouter, Request, Depends, Form, status, UploadFile, File, Response 
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
-from sqlmodel import Session
-
+from sqlmodel import Session, select
 from database import get_session
-# Importación directa
 from models import Component, Suggestion 
 from typing import Optional
 
 import shutil
 import os
+import uuid # Para generar nombres de archivo únicos
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
+# Directorio donde se guardarán las imágenes de las sugerencias
+# ¡Asegúrate de que esta carpeta exista!
 STATIC_DIR = "static/img/suggested_components" 
 
 @router.get("/", response_class=HTMLResponse)
 def pc_interactive_view(request: Request, session: Session = Depends(get_session)):
-    components = session.query(Component).limit(5).all()
+    components = session.exec(select(Component).limit(5)).all()
     build = {"name": "PC Gamer Elite", "description": "Explorador Interactivo de Componentes."}
     return templates.TemplateResponse(
         "pc_view.html", 
@@ -36,54 +36,71 @@ def submit_contact(
     session: Session = Depends(get_session)
 ):
     image_url_db = None
-    if component_image and component_image.filename:
+    
+    # Lógica de manejo y guardado de archivos
+    if component_image and component_image.filename and component_image.size > 0:
         file_extension = os.path.splitext(component_image.filename)[1]
-        unique_filename = f"suggest_{sender_name.replace(' ', '_').lower()}_{os.urandom(4).hex()}{file_extension}"
+        
+        # Usamos un UUID para un nombre de archivo único y seguro
+        unique_filename = f"{uuid.uuid4().hex}{file_extension}"
         file_path = os.path.join(STATIC_DIR, unique_filename)
 
         try:
+            # 1. Crear el directorio si no existe
             os.makedirs(STATIC_DIR, exist_ok=True) 
+            # 2. Guardar el archivo en el sistema de archivos
             with open(file_path, "wb") as buffer:
+                # component_image.file es un SpooledTemporaryFile; shutil.copyfileobj lo maneja bien
                 shutil.copyfileobj(component_image.file, buffer)
+            # 3. Guardar la URL pública en la base de datos
             image_url_db = f"/static/img/suggested_components/{unique_filename}"
         except Exception as e:
             print(f"Error al guardar la imagen de sugerencia: {e}")
+            # Considerar qué hacer si falla el guardado, pero la sugerencia es válida.
+        finally:
+            component_image.file.close()
+
 
     new_suggestion = Suggestion(
         sender_name=sender_name,
         message=suggestion_message,
-        image_url=image_url_db
+        image_url=image_url_db # Puede ser la URL o None
     )
     session.add(new_suggestion)
     session.commit()
-    print(f"Sugerencia de {sender_name} guardada.")
+    session.refresh(new_suggestion)
+    print(f"Sugerencia de {sender_name} guardada con ID: {new_suggestion.id}")
 
-    return RedirectResponse(
-        url="/", 
+    # Establecer la cookie de éxito
+    response = RedirectResponse(
+        url=request.url_for("pc_interactive_view"), 
         status_code=status.HTTP_303_SEE_OTHER
     )
+    # Se añade la cookie para mostrar el mensaje de éxito en la vista principal
+    response.set_cookie(key="success_message", value="¡Sugerencia enviada con éxito!", httponly=False)
+    return response
 
 
+# RUTA GET: OBTENER SUGERENCIAS EN FORMATO JSON
 @router.get("/suggestions/json")
 def get_suggestions_json(session: Session = Depends(get_session)):
-    suggestions = session.query(Suggestion).all()
+    suggestions = session.exec(select(Suggestion)).all()
     
     return [
-        {"id": s.id, "sender_name": s.sender_name, "message": s.message, "image_url": s.image_url} 
+        {
+            "id": s.id, 
+            "sender_name": s.sender_name, 
+            "message": s.message, 
+            "image_url": s.image_url # Este campo es clave
+        } 
         for s in suggestions
     ]
 
-# ===============================================
-# RUTA DELETE: ELIMINAR SUGERENCIA (USANDO RESPONSE PARA FORZAR 204)
-# ===============================================
+
 @router.delete("/suggestions/{suggestion_id}")
 def delete_suggestion(suggestion_id: int, session: Session = Depends(get_session)):
-    """Elimina una sugerencia por ID y devuelve 204 (No Content)."""
     suggestion = session.get(Suggestion, suggestion_id)
-    
     if suggestion:
         session.delete(suggestion)
         session.commit()
-    
-    # 🌟 CORRECCIÓN APLICADA: Devolvemos una respuesta vacía con el código 204
     return Response(status_code=status.HTTP_204_NO_CONTENT)
