@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}PC Interactivo Gamer{% endblock %}
+
+{% block content %}
+
+<button id="open-contact-btn" class="btn-primary" 
+        style="position: fixed; top: 20px; right: 20px; z-index: 999;">
+    Formulario de Contacto
+</button>
+
+<button id="open-suggestions-btn" class="btn-primary" 
+        style="position: fixed; top: 70px; right: 20px; z-index: 999; background: #5c1899;">
+    Buzón de Sugerencias
+</button>
+
+<div class="pc-stage">
+    
+    <div class="pc-center">
+        <div class="pc-frame">
+            <img id="pc-main"
+                 src="/static/img/1753398281140-MKQWTYTRYP-1-1-removebg-preview.png"
+                 alt="Torre PC Gamer Interactiva">
+        </div>
+    </div>
+    
+    <div class="floating-buttons-container">
+        <h3 class="component-header">Componentes <span class="header-icon">🕹️</span></h3>
+        
+        <button class="component-button" data-id="2">Tarjeta Gráfica (GPU)</button>
+        <button class="component-button" data-id="7">Memoria RAM (RAM)</button>
+        <button class="component-button" data-id="3">Procesador (CPU)</button>
+        <button class="component-button" data-id="4">Placa Base (Motherboard)</button>
+        <button class="component-button" data-id="6">Almacenamiento (SSD)</button>
+        <button class="component-button" data-id="8">Ventilación (Fans)</button>
+        <button class="component-button" data-id="5">Fuente de Poder (PSU)</button>
+    </div>
+
+    <div id="component-panel" class="component-panel">
+        <button id="close-panel" class="close-btn">✕</button>
+
+        <div id="comp-content">
+            <img id="comp-img" src="" alt="Imagen del Componente" class="comp-img">
+            <h2 id="comp-name">Nombre</h2>
+            <p id="comp-kind">Tipo</p>
+            <p id="comp-brand">Marca</p>
+            <p id="comp-price">Precio</p>
+            <hr/>
+            <p id="comp-desc">Descripción</p>
+        </div>
+    </div>
+
+</div>
+<div id="contact-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Formulario de Sugerencias (Con Nombre)</h2>
+        
+        <form method="POST" action="/submit-contact" class="contact-form" enctype="multipart/form-data">
+            
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" name="name" required>
+            
+            <label for="email">Correo Electrónico:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="suggestion_box">Buzón de Sugerencias:</label>
+            <textarea id="suggestion_box" name="suggestion_box" rows="5" required></textarea>
+            
+            <label for="component_image">Imagen de Componente que Necesitas (Opcional):</label>
+            <input type="file" id="component_image" name="component_image" accept="image/*">
+            
+            <button type="submit" class="btn-primary" style="margin-top: 15px;">Enviar Sugerencia</button>
+        </form>
+    </div>
+</div>
+
+<div id="suggestions-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-suggestions-modal">&times;</span>
+        <h2>Comentarios del Buzón</h2>
+        <div id="suggestions-list" class="suggestion-list">
+            <p>Cargando sugerencias...</p>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/pc.js"></script> 
+{% endblock %}

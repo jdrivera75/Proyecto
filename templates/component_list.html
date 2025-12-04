@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Componentes{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/pc.css">
+
+<div class="component-container">
+
+    <h1 class="titulo-componentes">Componentes del PC</h1>
+
+    <div class="component-grid">
+
+        {% for comp in componentes %}
+        <div class="component-card" onclick="zoomComponente('{{ comp.nombre }}', '{{ comp.imagen }}')">
+            <img src="C:\Users\USUARIO\pc_builder\static\img\1753398281140-MKQWTYTRYP-1-1-removebg-preview.png" class="component-img">
+            <h3>{{ comp.nombre }}</h3>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- Modal / Zoom -->
+<div id="zoomModal" class="zoom-modal">
+    <div class="zoom-content">
+        <span class="cerrar" onclick="cerrarZoom()">&times;</span>
+        <img id="zoomImagen" class="zoom-img">
+        <h2 id="zoomTitulo"></h2>
+    </div>
+</div>
+
+<script src="/static/js/pc.js"></script>
+
+{% endblock %}

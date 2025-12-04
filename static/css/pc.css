@@ -1,0 +1,255 @@
+/* --- VARIABLES GLOBALES (DE base.html) --- */
+/* (Se asume que están definidas) */
+
+/* --- LAYOUT GENERAL --- */
+.pc-stage {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; 
+    width: 95vw; 
+    max-width: 1400px;
+    margin: 50px auto;
+    gap: 40px;
+    padding: 20px 0;
+}
+
+.pc-center {
+    flex-shrink: 0;
+    position: relative;
+    width: 600px; 
+    height: 400px;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: var(--glow-shadow);
+}
+
+.pc-frame {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+#pc-main {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.5s ease-in-out;
+    filter: drop-shadow(0 0 5px rgba(255, 51, 102, 0.5)); 
+}
+
+/* --- CONTENEDOR DE BOTONES FLOTANTES --- */
+.floating-buttons-container {
+    position: sticky; 
+    top: 100px; 
+    padding: 20px;
+    min-width: 250px;
+    background-color: rgba(18, 18, 18, 0.9); 
+    border-radius: 12px;
+    box-shadow: 0 0 15px var(--accent-blue);
+    z-index: 50; 
+}
+
+.component-header {
+    text-align: center;
+    color: var(--accent-red);
+    text-shadow: 0 0 5px var(--accent-red);
+    border-bottom: 2px solid var(--accent-blue);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.component-button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid var(--accent-blue);
+    border-radius: 5px;
+    background-color: #2a2a2a; 
+    color: var(--text-light);
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.1s;
+}
+
+.component-button:hover {
+    background-color: #4a4a4a;
+    transform: translateX(5px); 
+    box-shadow: 0 0 10px var(--accent-red);
+    border-color: var(--accent-red);
+}
+
+
+/* --- PANEL DE COMPONENTES --- */
+.component-panel {
+    position: fixed; 
+    top: 50%;
+    right: -450px; 
+    transform: translateY(-50%);
+    width: 400px;
+    min-height: 400px;
+    background-color: rgba(18, 18, 18, 0.95); 
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: var(--glow-shadow);
+    z-index: 100;
+    transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+    border: 2px solid var(--accent-red);
+}
+
+.component-panel.open {
+    right: 20px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--accent-red);
+    font-size: 24px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: var(--text-light);
+}
+
+#comp-content h2 {
+    color: var(--accent-blue);
+    margin-top: 10px;
+    border-bottom: 2px solid var(--accent-red);
+    padding-bottom: 5px;
+}
+
+#comp-content p {
+    margin: 5px 0;
+}
+
+#comp-content hr {
+    border-color: rgba(255, 51, 102, 0.3);
+    margin: 15px 0;
+}
+
+.comp-img {
+    width: 100%;
+    max-height: 180px;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 0 5px var(--accent-blue);
+    margin-bottom: 10px;
+}
+
+/* --- BOTONES (Generales - Se mantienen) --- */
+.btn-primary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(45deg, var(--accent-red), var(--accent-blue));
+    color: var(--bg-dark);
+}
+
+.btn-primary:hover {
+    box-shadow: var(--glow-shadow);
+    transform: translateY(-2px);
+}
+
+/* Estilos de btn-secondary y .disabled ELIMINADOS */
+
+/* --- MODAL (Se mantienen) --- */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 200; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.8); 
+}
+
+.modal-content {
+    background-color: var(--bg-dark);
+    margin: 10% auto; 
+    padding: 30px;
+    border: 2px solid var(--accent-blue);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: var(--glow-shadow);
+    position: relative;
+}
+
+.close-modal {
+    color: var(--accent-red);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: var(--text-light);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.contact-form label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: var(--accent-red);
+    font-weight: bold;
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid var(--accent-blue);
+    background-color: #222;
+    color: var(--text-light);
+    border-radius: 5px;
+    box-shadow: inset 0 0 3px rgba(0, 191, 255, 0.5);
+}
+
+.contact-form button[type="submit"] {
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* Responsividad para móviles: oculta los botones flotantes o los mueve */
+@media (max-width: 992px) {
+    .floating-buttons-container {
+        position: static; 
+        margin: 20px auto;
+        min-width: 90%;
+        max-width: 600px;
+    }
+    
+    .pc-stage {
+        flex-direction: column;
+        align-items: center; 
+        gap: 20px;
+    }
+    
+    .pc-center {
+        order: -1; 
+    }
+}

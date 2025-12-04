@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PC Builder{% endblock %}</title>
+    <!-- CSS global: Estilo Gamer/RGB -->
+    <link rel="stylesheet" href="/static/css/pc.css">
+    
+    <style>
+        /* Estilos Gamer/RGB integrados de base */
+        :root {
+            --bg-dark: #121212;
+            --text-light: #fefefe;
+            --accent-red: #ff3366; 
+            --accent-blue: #00bfff; 
+            --glow-shadow: 0 0 10px var(--accent-red), 0 0 20px var(--accent-blue);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--bg-dark); 
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            flex-direction: column;
+        }
+
+        /* Estilo para el mensaje de éxito del formulario */
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--accent-blue);
+            color: var(--bg-dark);
+            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: var(--glow-shadow);
+            z-index: 1000;
+            font-weight: bold;
+            animation: fadein 0.5s;
+        }
+
+        @keyframes fadein {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Mensaje de éxito del formulario -->
+    {% if success_message %}
+        <div class="success-message" onclick="this.remove()">
+            {{ success_message }}
+        </div>
+    {% endif %}
+
+    <!-- Contenido principal (pc_view.html) -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>
