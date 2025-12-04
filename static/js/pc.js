@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const res = await fetch('/components/' + id + '/json');
             if (!res.ok) {
-                // Si el backend lanza 404, mostramos el error aquí
                 throw new Error(`Error cargando componente (Status: ${res.status}).`);
             }
             const data = await res.json();
@@ -73,6 +72,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function openModal() { contactModal.style.display = "block"; }
     function closeModal() { contactModal.style.display = "none"; }
+
+    // Función para manejar el cierre al hacer click fuera o con tecla Escape
+    window.onclick = function(event) {
+        if (event.target == contactModal) {
+            closeModal();
+        }
+        if (event.target == suggestionsModal) {
+            suggestionsModal.style.display = "none";
+        }
+    }
+    window.onkeydown = function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+            closePanel();
+            suggestionsModal.style.display = "none";
+        }
+    }
     
     // --- EVENT LISTENERS (Se mantienen) ---
     document.querySelectorAll('.component-button[data-id]').forEach(button => {
@@ -91,17 +107,15 @@ document.addEventListener("DOMContentLoaded", function () {
     openSuggestionsBtn?.addEventListener('click', () => {
         closePanel(); 
         closeModal();
-        loadSuggestions();
+        loadSuggestions(); // Carga de datos
         suggestionsModal.style.display = "block";
     });
 
     closeSuggestionsModalBtn?.addEventListener('click', () => {
         suggestionsModal.style.display = "none";
     });
-    // ... (Cierre con Escape y click fuera) ...
-
-
-    // 🌟 FUNCIÓN: Eliminar sugerencia (Verificación de 204) 🌟
+    
+    // 🌟 FUNCIÓN: Eliminar sugerencia 🌟
     async function deleteSuggestion(id) {
         if (!confirm("¿Estás seguro de que deseas eliminar esta sugerencia?")) return;
 
@@ -110,12 +124,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 method: 'DELETE',
             });
 
-            // 🌟 CLAVE: Si el backend devuelve 204, es éxito.
             if (res.status === 204) { 
                 alert("Sugerencia eliminada con éxito.");
                 loadSuggestions(); 
             } else {
-                // El log mostraba 200, pero el 204 es el correcto. Si es otro código, lanzamos error.
                 alert(`Error al eliminar la sugerencia. Código: ${res.status}.`); 
             }
         } catch (err) {
@@ -124,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
     
-    // 🌟 FUNCIÓN: Cargar las sugerencias (IMAGEN OCULTA) 🌟
+    // 🌟 FUNCIÓN: Cargar las sugerencias (AHORA CON IMAGEN) 🌟
     async function loadSuggestions() {
         const listDiv = document.getElementById("suggestions-list");
         listDiv.innerHTML = '<p>Cargando sugerencias...</p>'; 
@@ -141,21 +153,40 @@ document.addEventListener("DOMContentLoaded", function () {
                 listDiv.innerHTML = '<p>El buzón está vacío. ¡Sé el primero en dejar un comentario!</p>';
                 return;
             }
+            
+            listDiv.innerHTML = data.map(s => {
+                // 🌟 LÓGICA CLAVE PARA MOSTRAR LA IMAGEN
+                let imageHtml = '';
+                if (s.image_url) {
+                    imageHtml = `
+                        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #333;">
+                            <img src="${s.image_url}" 
+                                 alt="Foto adjunta por ${s.sender_name}" 
+                                 style="max-width: 150px; height: auto; border-radius: 5px; border: 2px solid #00bfff;">
+                        </div>
+                    `;
+                } else {
+                    imageHtml = `<p style="opacity: 0.7; font-style: italic; margin-top: 5px;">No se adjuntó foto.</p>`;
+                }
+                // ---------------------------------------------
+                
+                return `
+                    <div class="suggestion-item" style="border-bottom: 1px dashed #444; padding: 10px 0; position: relative; margin-bottom: 10px;">
+                        <p style="margin: 0; color: #fff;">
+                            💬 <strong>${s.sender_name || 'Usuario Desconocido'} dice:</strong> 
+                            ${s.message}
+                        </p>
+                        
+                        ${imageHtml}
+                        
+                        <button class="delete-suggestion-btn" data-id="${s.id}" 
+                                style="position: absolute; top: 5px; right: 5px; background: none; border: 1px solid red; color: red; cursor: pointer; padding: 3px 6px; border-radius: 5px; font-size: 10px;">
+                            ✕ Eliminar
+                        </button>
+                    </div>`;
+            }).join('');
 
-            listDiv.innerHTML = data.map(s => 
-                `<div class="suggestion-item" style="border-bottom: 1px dashed #444; padding: 10px 0; position: relative;">
-                    <p style="margin: 0; color: #fff;">
-                        💬 <strong>${s.sender_name || 'Usuario Desconocido'} dice:</strong> 
-                        ${s.message}
-                    </p>
-                    
-                    <button class="delete-suggestion-btn" data-id="${s.id}" 
-                            style="position: absolute; top: 5px; right: 5px; background: none; border: 1px solid red; color: red; cursor: pointer; padding: 3px 6px; border-radius: 5px; font-size: 10px;">
-                        ✕ Eliminar
-                    </button>
-                </div>`
-            ).join('');
-
+            // Re-asignar eventos de eliminación después de actualizar el HTML
             document.querySelectorAll('.delete-suggestion-btn').forEach(button => {
                 const id = parseInt(button.dataset.id);
                 button.addEventListener('click', () => deleteSuggestion(id));
@@ -165,6 +196,16 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Error al cargar sugerencias:", err);
             listDiv.innerHTML = '<p style="color:red;">Fallo de conexión al cargar el buzón.</p>';
         }
+    }
+
+    // --- Lógica de mensaje de éxito (Asegurarse de limpiar la cookie) ---
+    const successMessageDiv = document.querySelector('.success-message');
+    if (successMessageDiv) {
+        // Eliminar la cookie después de 3 segundos para que no vuelva a aparecer
+        setTimeout(() => {
+            document.cookie = "success_message=; Max-Age=0; path=/"; 
+            successMessageDiv.remove();
+        }, 3000); 
     }
 
 });
