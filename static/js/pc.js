@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // --- Funciones de Fallback y Componentes ---
     function getFallbackImageUrl(componentId) {
+        // ... (Tu lógica existente de fallback)
         switch (componentId.toString()) { 
             case '2': return '/static/img/grafica.webp';
             case '3': return '/static/img/What-Is-a-Core-in-a-CPU.jpg';
@@ -135,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
     
-    // 🌟 FUNCIÓN: Cargar las sugerencias (AHORA CON LÓGICA DE IMAGEN) 🌟
+    // 🌟 FUNCIÓN: Cargar las sugerencias (CON IMAGEN DE PERFIL) 🌟
     async function loadSuggestions() {
         const listDiv = document.getElementById("suggestions-list");
         listDiv.innerHTML = '<p>Cargando sugerencias...</p>'; 
@@ -154,32 +155,37 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             listDiv.innerHTML = data.map(s => {
-                // 🌟 LÓGICA CLAVE PARA MOSTRAR LA IMAGEN
+                // 🌟 LÓGICA CLAVE PARA MOSTRAR LA IMAGEN DE PERFIL (Redonda)
                 let imageHtml = '';
                 if (s.image_url) {
                     imageHtml = `
-                        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #333;">
+                        <div style="flex-shrink: 0; text-align: center;">
                             <img src="${s.image_url}" 
                                  alt="Foto de perfil de ${s.sender_name}" 
-                                 style="max-width: 150px; height: auto; border-radius: 50%; width: 100px; height: 100px; object-fit: cover; border: 2px solid #00bfff;">
-                                 <p style="font-size: 0.8em; opacity: 0.8; margin-top: 5px;">Foto de Perfil Adjunta</p>
+                                 style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #00bfff;">
                         </div>
                     `;
                 } else {
-                    imageHtml = `<p style="opacity: 0.7; font-style: italic; margin-top: 5px;">No se adjuntó foto de perfil.</p>`;
+                    // Placeholder para cuando no hay imagen
+                    imageHtml = `
+                        <div style="flex-shrink: 0; width: 70px; height: 70px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2em; color: #aaa;">
+                            👤
+                        </div>
+                    `;
                 }
                 // ---------------------------------------------
                 
                 return `
-                    <div class="suggestion-item" style="border-bottom: 1px dashed #444; padding: 10px 0; position: relative; margin-bottom: 10px; display: flex; align-items: center; gap: 20px;">
+                    <div class="suggestion-item" style="border-bottom: 1px dashed #444; padding: 10px 0; position: relative; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 15px;">
                         
                         ${imageHtml}
                         
-                        <div style="flex-grow: 1;">
-                            <p style="margin: 0; color: #fff;">
+                        <div style="flex-grow: 1; min-width: 0;">
+                            <p style="margin: 0; color: #fff; word-wrap: break-word;">
                                 💬 <strong>${s.sender_name || 'Usuario Desconocido'} dice:</strong> 
                                 ${s.message}
                             </p>
+                            <p style="font-size: 0.8em; opacity: 0.6; margin-top: 5px;">Comentario ID: ${s.id}</p>
                         </div>
                         
                         <button class="delete-suggestion-btn" data-id="${s.id}" 
@@ -201,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // --- Lógica de mensaje de éxito (Asegurarse de limpiar la cookie) ---
+    // --- Lógica de mensaje de éxito ---
     const successMessageDiv = document.querySelector('.success-message');
     if (successMessageDiv) {
         // Eliminar la cookie después de 3 segundos para que no vuelva a aparecer
