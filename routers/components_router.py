@@ -10,20 +10,13 @@ from models import Component
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
-# ... (Omitido código de listar, crear, detalle normal) ...
-
-# ===========================================
-# DETALLE EN JSON (PARA pc.js)
-# ===========================================
 @router.get("/{component_id}/json")
 def component_json(component_id: int, session: Session = Depends(get_session)):
     comp = session.get(Component, component_id)
     
-    # Si el componente no existe (causa del 404 en el log), lanzamos un 404 explícito
     if not comp:
         raise HTTPException(status_code=404, detail="Componente no encontrado en la DB")
 
-    # Lógica de fallback de imágenes (si se necesita)
     image_url_final = comp.image_url
     
     if comp.id == 2: # Tarjeta Gráfica
@@ -43,10 +36,7 @@ def component_json(component_id: int, session: Session = Depends(get_session)):
         "image_url": image_url_final 
     }
     
-# ... (Omitido código de eliminar) ...
-# ===========================================
-# ELIMINAR
-# ===========================================
+
 @router.post("/{component_id}/delete")
 def delete_component(component_id: int, session: Session = Depends(get_session)):
     comp = session.get(Component, component_id)
