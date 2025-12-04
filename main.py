@@ -16,14 +16,10 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# ===========================================
-# 3. CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS
-# ===========================================
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# ===========================================
-# 4. INCLUSIÓN DE ROUTERS
-# ===========================================
+
 app.include_router(pc_router.router, tags=["PC"])
 app.include_router(components_router.router, prefix="/components", tags=["Components"])
 
