@@ -28,9 +28,7 @@ app.include_router(pc_router.router, tags=["PC"])
 app.include_router(components_router.router, prefix="/components", tags=["Components"])
 
 
-# ===========================================
-# 5. EVENTO DE INICIO (SETUP DE LA BASE DE DATOS)
-# ===========================================
+
 @app.on_event("startup")
 def on_startup():
     """Crea la base de datos y las tablas al iniciar la aplicación."""
